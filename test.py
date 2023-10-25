@@ -877,7 +877,7 @@ def euvl_phase2_test():
 def bfo_test():
 
     # folder is the where we store all our intermediate databases
-    folder = "/global/scratch/users/vbaibakova/bfo_test"
+    folder = "./scratch/bfo_test"
     subprocess.run(["mkdir", folder])
 
     # Generated json from quacc calc
