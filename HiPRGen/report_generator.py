@@ -6,7 +6,7 @@ from pathlib import Path
 atom_colors = {
     "H": "gray",
     "C": "black",
-    "Li": "purple",
+    "Bi": "purple",
     "B": "orange",
     "N": "blue",
     "O": "red",
