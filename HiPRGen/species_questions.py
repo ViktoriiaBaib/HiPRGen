@@ -522,5 +522,7 @@ euvl_species_decision_tree = [
 ]
 
 bfo_species_decision_tree = [
+    (compute_graph_hashes, Terminal.KEEP),
+    (add_star_hashes(), Terminal.KEEP),
     (species_default_true(), Terminal.KEEP),
 ]
