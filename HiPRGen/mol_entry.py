@@ -349,12 +349,6 @@ class MoleculeEntry:
         electron_affinity_eV = None
         ionization_energy_eV = None
 
-        except KeyError as e:
-            raise Exception(
-                "Unable to construct molecule entry from molecule document; missing "
-                f"attribute {e} in `doc`."
-            )
-
         return cls(
             molecule=molecule,
             energy=energy,
