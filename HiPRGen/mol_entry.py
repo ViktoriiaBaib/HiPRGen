@@ -104,23 +104,6 @@ class MoleculeEntry:
         self.non_metal_atoms = [
             i for i in range(self.num_atoms) if self.species[i] not in metals
         ]
-    
-    def decode_ndarray(data):
-        dtype = data['__ndarray__'][1]
-        values = np.array(data['__ndarray__'][2], dtype=dtype)
-        return values.reshape(data['__ndarray__'][0])
-    
-    def init_ase_atoms_from_dict(doc):
-        decoded_data = json.loads(doc['atoms']['atoms_json'])
-        numbers = decode_ndarray(decoded_data['numbers'])
-        positions = decode_ndarray(decoded_data['positions'])
-        charges = decode_ndarray(decoded_data['initial_charges'])
-        magmoms = decode_ndarray(decoded_data['initial_magmoms'])
-        cell = decode_ndarray(decoded_data['cell'])
-        pbc = decode_ndarray(decoded_data['pbc'])
-        # Initialize the ASE Atoms object
-        atoms = Atoms(numbers=numbers, positions=positions, charges=charges, magmoms=magmoms, cell=cell, pbc=pbc)
-        return(atoms)
 
     @classmethod
     def from_dataset_entry(
@@ -331,6 +314,23 @@ class MoleculeEntry:
         Args:
             doc: Dictionary representing an entry from bfo quacc
         """
+
+        def decode_ndarray(data):
+            dtype = data['__ndarray__'][1]
+            values = np.array(data['__ndarray__'][2], dtype=dtype)
+            return values.reshape(data['__ndarray__'][0])
+        def init_ase_atoms_from_dict(doc):
+            decoded_data = json.loads(doc['atoms']['atoms_json'])
+            numbers = decode_ndarray(decoded_data['numbers'])
+            positions = decode_ndarray(decoded_data['positions'])
+            charges = decode_ndarray(decoded_data['initial_charges'])
+            magmoms = decode_ndarray(decoded_data['initial_magmoms'])
+            cell = decode_ndarray(decoded_data['cell'])
+            pbc = decode_ndarray(decoded_data['pbc'])
+            # Initialize the ASE Atoms object
+            atoms = Atoms(numbers=numbers, positions=positions, charges=charges, magmoms=magmoms, cell=cell, pbc=pbc)
+            return(atoms)
+
         atoms = init_ase_atoms_from_dict(doc)
         molecule = AseAtomsAdaptor.get_molecule(atoms)
         energy = doc["energy"] #eV
