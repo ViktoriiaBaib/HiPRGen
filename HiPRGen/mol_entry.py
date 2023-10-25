@@ -3,6 +3,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import networkx as nx
 import numpy as np
+import json
+from ase import Atoms
+from pymatgen.io.ase import AseAtomsAdaptor
 from pymatgen.analysis.graphs import MoleculeGraph, MolGraphSplitError
 from pymatgen.analysis.local_env import OpenBabelNN, metal_edge_extender#, oxygen_edge_extender
 from pymatgen.core.structure import Molecule
@@ -101,6 +104,23 @@ class MoleculeEntry:
         self.non_metal_atoms = [
             i for i in range(self.num_atoms) if self.species[i] not in metals
         ]
+    
+    def decode_ndarray(data):
+        dtype = data['__ndarray__'][1]
+        values = np.array(data['__ndarray__'][2], dtype=dtype)
+        return values.reshape(data['__ndarray__'][0])
+    
+    def init_ase_atoms_from_dict(doc):
+        decoded_data = json.loads(doc['atoms']['atoms_json'])
+        numbers = decode_ndarray(decoded_data['numbers'])
+        positions = decode_ndarray(decoded_data['positions'])
+        charges = decode_ndarray(decoded_data['initial_charges'])
+        magmoms = decode_ndarray(decoded_data['initial_magmoms'])
+        cell = decode_ndarray(decoded_data['cell'])
+        pbc = decode_ndarray(decoded_data['pbc'])
+        # Initialize the ASE Atoms object
+        atoms = Atoms(numbers=numbers, positions=positions, charges=charges, magmoms=magmoms, cell=cell, pbc=pbc)
+        return(atoms)
 
     @classmethod
     def from_dataset_entry(
@@ -299,6 +319,54 @@ class MoleculeEntry:
             partial_charges_nbo=partial_charges_nbo,
             electron_affinity=electron_affinity,
             ionization_energy=ionization_energy,
+            spin_multiplicity=spin_multiplicity,
+            partial_spins_nbo=partial_spins_nbo,
+        )
+    
+    @classmethod
+    def from_quacc_entry(cls, doc: Dict):
+        """
+        Initialize a MoleculeEntry from a document in the bfo datasets.
+
+        Args:
+            doc: Dictionary representing an entry from bfo quacc
+        """
+        atoms = init_ase_atoms_from_dict(doc)
+        molecule = AseAtomsAdaptor.get_molecule(atoms)
+        energy = doc["energy"] #eV
+        enthalpy = doc["enthalpy"] #eV
+        entropy = doc["entropy"] #eV/K
+
+        entry_id = doc["name"]
+        mol_gr = MoleculeGraph.with_local_env_strategy(molecule, OpenBabelNN())
+        mol_graph = metal_edge_extender(mol_gr, cutoff=3, metals=None,coordinators=("O"))
+
+        partial_charges_resp = None
+        partial_charges_mulliken = None
+        partial_charges_nbo = None
+        partial_spins_nbo = None
+        spin_multiplicity = None
+        electron_affinity_eV = None
+        ionization_energy_eV = None
+
+        except KeyError as e:
+            raise Exception(
+                "Unable to construct molecule entry from molecule document; missing "
+                f"attribute {e} in `doc`."
+            )
+
+        return cls(
+            molecule=molecule,
+            energy=energy,
+            enthalpy=enthalpy,
+            entropy=entropy,
+            entry_id=entry_id,
+            mol_graph=mol_graph,
+            partial_charges_resp=partial_charges_resp,
+            partial_charges_mulliken=partial_charges_mulliken,
+            partial_charges_nbo=partial_charges_nbo,
+            electron_affinity=electron_affinity_eV,
+            ionization_energy=ionization_energy_eV,
             spin_multiplicity=spin_multiplicity,
             partial_spins_nbo=partial_spins_nbo,
         )

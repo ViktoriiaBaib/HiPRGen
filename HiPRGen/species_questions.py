@@ -520,3 +520,5 @@ euvl_species_decision_tree = [
     (add_single_bond_fragments(allow_ring_opening=False), Terminal.KEEP),
     (species_default_true(), Terminal.KEEP),
 ]
+
+bfo_species_decision_tree = []

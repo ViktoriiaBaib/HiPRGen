@@ -23,6 +23,7 @@ from HiPRGen.species_questions import (
     euvl_species_decision_tree,
     positive_penalty,
     species_default_true,
+    bfo_species_decision_tree
 )
 
 from HiPRGen.reaction_questions import (
@@ -873,6 +874,36 @@ def euvl_phase2_test():
 
     return tests_passed
 
+def bfo_test():
+
+    # folder is the where we store all our intermediate databases
+    folder = "/global/scratch/users/vbaibakova/bfo_test"
+    subprocess.run(["mkdir", folder])
+
+    # Generated json from quacc calc
+    mol_json = "/global/home/groups/lr_mp/vbaibakova/results/bfo_hiprgen_small_dataset.json"
+    database_entries = loadfn(mol_json)
+    # step 1: pass the input molecules through the species decision tree to discard molecules
+    species_decision_tree = bfo_species_decision_tree
+
+    params = {"temperature": ROOM_TEMP}
+
+    # We consider two molecules to be equivalent if they have the same total charge,
+    # composition, and covalent bonds, even if they have different metal coordination
+
+    mol_entries = species_filter(
+        database_entries,
+        mol_entries_pickle_location=folder + "/mol_entries.pickle",
+        species_report=folder + "/unfiltered_species_report.tex",
+        species_decision_tree=species_decision_tree,
+        coordimer_weight=lambda mol: (mol.penalty, mol.solvation_correction + mol.get_free_energy(params["temperature"])),
+    )
+
+    tests_passed = True
+
+    print(len(mol_entries))
+
+    return tests_passed
 
 tests = [
     # mg_test,
@@ -880,7 +911,8 @@ tests = [
     # flicho_test,
     # co2_test,
     # euvl_phase1_test,
-    euvl_phase2_test,
+    #euvl_phase2_test,
+    bfo_test
 ]
 
 for test in tests:

@@ -97,7 +97,10 @@ def species_filter(
     log_message("starting species filter")
     log_message("loading molecule entries from json")
 
-    if "has_props" in dataset_entries[0].keys():
+    if "label" in dataset_entries[0].keys():
+        mol_entries_unfiltered = [MoleculeEntry.from_quacc_entry(e) for e in dataset_entries]
+        log_message("Quacc entries passed")
+    elif "has_props" in dataset_entries[0].keys():
         mol_entries_unfiltered = [MoleculeEntry.from_mp_doc(e) for e in dataset_entries]
         log_message("MP doc entries passed")
     else:
