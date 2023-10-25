@@ -887,7 +887,7 @@ def bfo_test():
     # step 1: pass the input molecules through the species decision tree to discard molecules
     species_decision_tree = bfo_species_decision_tree
 
-    params = {"temperature": ROOM_TEMP}
+    params = {"temperature": ROOM_TEMP, "electron_free_energy": 0.0}
 
     # We consider two molecules to be equivalent if they have the same total charge,
     # composition, and covalent bonds, even if they have different metal coordination
