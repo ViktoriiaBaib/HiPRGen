@@ -523,7 +523,12 @@ euvl_species_decision_tree = [
 bfo_species_decision_tree = [
     (compute_graph_hashes, Terminal.KEEP),
     (add_star_hashes(), Terminal.KEEP),
-    (has_covalent_ring(), Terminal.KEEP),
+    (add_unbroken_fragment(), Terminal.KEEP),
+    (add_single_bond_fragments(allow_ring_opening=True), Terminal.KEEP),
+    (has_covalent_ring(), [
+        (covalent_ring_fragments(), Terminal.KEEP),
+        (species_default_true(), Terminal.KEEP)
+    ]),
     (species_default_true(), Terminal.KEEP),
 
 ]

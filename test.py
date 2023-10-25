@@ -915,7 +915,7 @@ def bfo_test():
         folder + "/buckets.sqlite",
         bfo_reaction_decision_tree,
         params,
-        bfo_logging_reaction_decision_tree,
+        bfo_reaction_decision_tree,
     )
 
     # The dispatcher and worker payloads are passed through the MPI barrier

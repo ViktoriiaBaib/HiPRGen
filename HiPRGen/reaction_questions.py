@@ -1339,15 +1339,15 @@ bfo_reaction_decision_tree = [
     # (concerted_metal_coordination_one_product(), Terminal.DISCARD),
     # (concerted_metal_coordination_one_reactant(), Terminal.DISCARD),
     (metal_coordination_passthrough(), Terminal.KEEP),
-    (
-        fragment_matching_found(),
-        [
-            (single_reactant_single_product_not_atom_transfer(), Terminal.DISCARD),
-            (single_reactant_double_product_ring_close(), Terminal.DISCARD),
-            (reaction_default_true(), Terminal.KEEP),
-        ],
-    ),
-    (reaction_default_true(), Terminal.DISCARD),
+    #(
+        #fragment_matching_found(),
+        #[
+        #    (single_reactant_single_product_not_atom_transfer(), Terminal.DISCARD),
+        #    (single_reactant_double_product_ring_close(), Terminal.DISCARD),
+        #    (reaction_default_true(), Terminal.KEEP),
+        #],
+    #),
+    (reaction_default_true(), Terminal.KEEP),
 ]
 
 bfo_logging_reaction_decision_tree = [
