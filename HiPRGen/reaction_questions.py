@@ -1326,6 +1326,39 @@ default_reaction_decision_tree = [
     (reaction_default_true(), Terminal.DISCARD),
 ]
 
+bfo_reaction_decision_tree = [
+    (metal_metal_reaction(), Terminal.DISCARD),
+    # redox branch
+    (
+        is_redox_reaction(),
+        [
+            (too_many_reactants_or_products(), Terminal.DISCARD),
+            (dcharge_too_large(), Terminal.DISCARD),
+            (reactant_and_product_not_isomorphic(), Terminal.DISCARD),
+            (dG_above_threshold(0.0, "free_energy", 0.0), Terminal.DISCARD),
+            (reaction_default_true(), Terminal.KEEP),
+        ],
+    ),
+    (dG_above_threshold(0.0, "free_energy", 0.0), Terminal.DISCARD),
+    # (single_reactant_with_ring_break_two(), Terminal.KEEP),
+    # (single_product_with_ring_form_two(), Terminal.KEEP),
+    (star_count_diff_above_threshold(6), Terminal.DISCARD),
+    (reaction_is_covalent_decomposable(), Terminal.DISCARD),
+    (concerted_metal_coordination(), Terminal.DISCARD),
+    (concerted_metal_coordination_one_product(), Terminal.DISCARD),
+    (concerted_metal_coordination_one_reactant(), Terminal.DISCARD),
+    (metal_coordination_passthrough(), Terminal.KEEP),
+    (
+        fragment_matching_found(),
+        [
+            (single_reactant_single_product_not_atom_transfer(), Terminal.DISCARD),
+            (single_reactant_double_product_ring_close(), Terminal.DISCARD),
+            (reaction_default_true(), Terminal.KEEP),
+        ],
+    ),
+    (reaction_default_true(), Terminal.DISCARD),
+]
+
 co2_reaction_decision_tree = [
     (
         is_redox_reaction(),

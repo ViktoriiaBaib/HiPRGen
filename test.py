@@ -911,9 +911,9 @@ def bfo_test():
     # last parameter: make a custom decision tree to pick the filtered reactions, change later
     worker_payload = WorkerPayload(
         folder + "/buckets.sqlite",
-        default_reaction_decision_tree,
+        bfo_reaction_decision_tree,
         params,
-        default_reaction_decision_tree,
+        bfo_reaction_decision_tree,
     )
 
     # The dispatcher and worker payloads are passed through the MPI barrier
