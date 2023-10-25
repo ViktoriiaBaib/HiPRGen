@@ -899,9 +899,11 @@ def bfo_test():
         coordimer_weight=lambda mol: (mol.penalty, mol.get_free_energy(params["temperature"])),
     )
 
-    tests_passed = True
-
     print(len(mol_entries))
+
+    bucket(mol_entries, folder + "/buckets.sqlite")
+
+    tests_passed = True
 
     return tests_passed
 
