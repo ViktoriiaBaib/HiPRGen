@@ -1330,7 +1330,7 @@ bfo_reaction_decision_tree = [
     (metal_metal_reaction(), Terminal.DISCARD),
     # redox branch
     (is_redox_reaction(), Terminal.DISCARD),
-    (dG_above_threshold(0.0, "free_energy", 0.0), Terminal.KEEP), # look
+    (dG_above_threshold(5.0, "free_energy", 0.0), Terminal.DISCARD), # look
     (single_reactant_with_ring_break_two(), Terminal.KEEP), #break2
     (single_product_with_ring_form_two(), Terminal.KEEP), #form2
     (star_count_diff_above_threshold(8), Terminal.DISCARD), # 6 --> 8
@@ -1348,6 +1348,30 @@ bfo_reaction_decision_tree = [
         ],
     ),
     (reaction_default_true(), Terminal.DISCARD),
+]
+
+bfo_logging_reaction_decision_tree = [
+    (metal_metal_reaction(), Terminal.DISCARD),
+    # redox branch
+    (is_redox_reaction(), Terminal.DISCARD),
+    (dG_above_threshold(5.0, "free_energy", 0.0), Terminal.DISCARD), # look
+    (single_reactant_with_ring_break_two(), Terminal.DISCARD), #break2
+    (single_product_with_ring_form_two(), Terminal.DISCARD), #form2
+    (star_count_diff_above_threshold(8), Terminal.KEEP), # 6 --> 8
+    (reaction_is_covalent_decomposable(), Terminal.KEEP),
+    # (concerted_metal_coordination(), Terminal.DISCARD), # look
+    # (concerted_metal_coordination_one_product(), Terminal.DISCARD),
+    # (concerted_metal_coordination_one_reactant(), Terminal.DISCARD),
+    (metal_coordination_passthrough(), Terminal.DISCRAD),
+    (
+        fragment_matching_found(),
+        [
+            (single_reactant_single_product_not_atom_transfer(), Terminal.KEEP),
+            (single_reactant_double_product_ring_close(), Terminal.KEEP),
+            (reaction_default_true(), Terminal.DISCARD),
+        ],
+    ),
+    (reaction_default_true(), Terminal.KEEP),
 ]
 
 co2_reaction_decision_tree = [

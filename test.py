@@ -29,6 +29,7 @@ from HiPRGen.species_questions import (
 from HiPRGen.reaction_questions import (
     default_reaction_decision_tree,
     bfo_reaction_decision_tree,
+    bfo_logging_reaction_decision_tree,
     co2_reaction_decision_tree,
     euvl_phase1_reaction_decision_tree,
     euvl_phase1_reaction_logging_tree,
@@ -914,7 +915,7 @@ def bfo_test():
         folder + "/buckets.sqlite",
         bfo_reaction_decision_tree,
         params,
-        bfo_reaction_decision_tree,
+        bfo_logging_reaction_decision_tree,
     )
 
     # The dispatcher and worker payloads are passed through the MPI barrier
