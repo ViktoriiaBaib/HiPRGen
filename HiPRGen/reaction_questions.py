@@ -1362,7 +1362,7 @@ bfo_logging_reaction_decision_tree = [
     # (concerted_metal_coordination(), Terminal.DISCARD), # look
     # (concerted_metal_coordination_one_product(), Terminal.DISCARD),
     # (concerted_metal_coordination_one_reactant(), Terminal.DISCARD),
-    (metal_coordination_passthrough(), Terminal.DISCRAD),
+    (metal_coordination_passthrough(), Terminal.DISCARD),
     (
         fragment_matching_found(),
         [
