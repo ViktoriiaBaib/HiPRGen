@@ -521,4 +521,6 @@ euvl_species_decision_tree = [
     (species_default_true(), Terminal.KEEP),
 ]
 
-bfo_species_decision_tree = []
+bfo_species_decision_tree = [
+    (species_default_true(), Terminal.KEEP),
+]
