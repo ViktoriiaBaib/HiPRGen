@@ -1331,8 +1331,8 @@ bfo_reaction_decision_tree = [
     # redox branch
     (is_redox_reaction(), Terminal.DISCARD),
     (dG_above_threshold(0.0, "free_energy", 0.0), Terminal.DISCARD),
-    # (single_reactant_with_ring_break_two(), Terminal.KEEP),
-    # (single_product_with_ring_form_two(), Terminal.KEEP),
+    (single_reactant_with_ring_break_two(), Terminal.KEEP), #break2
+    (single_product_with_ring_form_two(), Terminal.KEEP), #form2
     (star_count_diff_above_threshold(6), Terminal.DISCARD),
     (reaction_is_covalent_decomposable(), Terminal.DISCARD),
     (concerted_metal_coordination(), Terminal.DISCARD),
