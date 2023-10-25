@@ -890,13 +890,13 @@ def bfo_test():
 
     # We consider two molecules to be equivalent if they have the same total charge,
     # composition, and covalent bonds, even if they have different metal coordination
-
+    # ASK: mol.solvation_correction | AttributeError: 'MoleculeEntry' object has no attribute 'solvation_correction'
     mol_entries = species_filter(
         database_entries,
         mol_entries_pickle_location=folder + "/mol_entries.pickle",
         species_report=folder + "/unfiltered_species_report.tex",
         species_decision_tree=species_decision_tree,
-        coordimer_weight=lambda mol: (mol.penalty, mol.solvation_correction + mol.get_free_energy(params["temperature"])),
+        coordimer_weight=lambda mol: (mol.penalty, mol.get_free_energy(params["temperature"])),
     )
 
     tests_passed = True
