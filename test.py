@@ -902,6 +902,51 @@ def bfo_test():
     print(len(mol_entries))
 
     bucket(mol_entries, folder + "/buckets.sqlite")
+    # 3rd parameter --> log file
+    dispatcher_payload = DispatcherPayload(
+        folder + "/buckets.sqlite",
+        folder + "/rn.sqlite",
+        folder + "/reaction_report.tex",
+    )
+    # last parameter: make a custom decision tree to pick the filtered reactions, change later
+    worker_payload = WorkerPayload(
+        folder + "/buckets.sqlite",
+        default_reaction_decision_tree,
+        params,
+        default_reaction_decision_tree,
+    )
+
+    # The dispatcher and worker payloads are passed through the MPI barrier
+    # as JSON blobs dispatcher_payload and worker_payload
+    dumpfn(dispatcher_payload, folder + "/dispatcher_payload.json")
+    dumpfn(worker_payload, folder + "/worker_payload.json")
+    
+    # Running HiPRGen --> rn.sqlite
+    subprocess.run(
+        [
+            "mpirun",
+            "--use-hwthread-cpus",
+            "-n",
+            number_of_threads,
+            "python",
+            "run_network_generation.py",
+            folder + "/mol_entries.pickle",
+            folder + "/dispatcher_payload.json",
+            folder + "/worker_payload.json",
+        ]
+    )
+
+    # Load crn and generate mol pictures and species report
+    network_loader = NetworkLoader(
+        folder + "/rn.sqlite",
+    folder + "/mol_entries.pickle",
+    )
+
+    # generate mol pictures and make pdf
+    report_generator = ReportGenerator(
+        network_loader.mol_entries, folder + "/dummy.tex", rebuild_mol_pictures=True
+    )
+    species_report(network_loader, folder + "/species_report.tex")
 
     tests_passed = True
 
