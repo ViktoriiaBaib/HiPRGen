@@ -136,7 +136,6 @@ class add_unbroken_fragment(MSONable):  #aka adds unfragmented molecule as a "fr
     def __call__(self, mol):
         if mol.formula in m_formulas:
             return False
-
         fragment_complex = FragmentComplex(1, 0, [], [mol.covalent_hash])
 
         mol.fragment_data.append(fragment_complex)
@@ -524,5 +523,7 @@ euvl_species_decision_tree = [
 bfo_species_decision_tree = [
     (compute_graph_hashes, Terminal.KEEP),
     (add_star_hashes(), Terminal.KEEP),
+    (has_covalent_ring(), Terminal.KEEP),
     (species_default_true(), Terminal.KEEP),
+
 ]
