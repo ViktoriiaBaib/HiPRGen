@@ -643,23 +643,27 @@ class reaction_is_covalent_decomposable(MSONable): # Remove A + B -> A + C, even
     def __call__(self, reaction, mol_entries, params):
         if (reaction['number_of_reactants'] == 2 and
             reaction['number_of_products'] == 2):
-
-
+            print("*** REACTION 2 REACT 2 PROD ***")
+            print("reactans")
             reactant_total_hashes = set()
             for i in range(reaction['number_of_reactants']):
                 reactant_id = reaction['reactants'][i]
                 reactant = mol_entries[reactant_id]
                 reactant_total_hashes.add(reactant.covalent_hash)
-
+                print("HASH\n",reactant.covalent_hash)
+            print("products")
             product_total_hashes = set()
             for i in range(reaction['number_of_products']):
                 product_id = reaction['products'][i]
                 product = mol_entries[product_id]
                 product_total_hashes.add(product.covalent_hash)
+                print("HASH\n",product.covalent_hash)
 
             if len(reactant_total_hashes.intersection(product_total_hashes)) > 0:
+                print("have intersection")
                 return True
             else:
+                print("no intersection")
                 return False
 
         return False
