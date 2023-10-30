@@ -570,7 +570,7 @@ bfo_species_decision_tree = [
     (add_star_hashes(), Terminal.KEEP),
     (add_unbroken_fragment(), Terminal.KEEP),
     (add_single_bond_fragments(allow_ring_opening=True), Terminal.KEEP),
-    # (add_two_bond_fragments(allow_ring_opening=True), Terminal.KEEP), # ? only take fragments that are still connected
+    (add_two_bond_fragments(allow_ring_opening=True), Terminal.KEEP), # ? only take fragments that are still connected
     (has_covalent_ring(), [
         (covalent_ring_fragments(), Terminal.KEEP),
         (species_default_true(), Terminal.KEEP)
