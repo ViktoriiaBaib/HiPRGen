@@ -188,6 +188,51 @@ class add_single_bond_fragments(MSONable): #called for all species that have pas
         return False
 
 
+class add_two_bond_fragments(MSONable):
+    def __init__(self, allow_ring_opening=True):
+        self.allow_ring_opening = allow_ring_opening
+
+    def __call__(self, mol):
+
+        if mol.formula in m_formulas:
+            return False
+
+        for edge1 in mol.covalent_graph.edges:
+            for edge2 in mol.covalent_graph.edges:
+                if edge1 != edge2 and not set(edge1).intersection(set(edge2)):  # not breaking the same bond twice and the two bonds are not connected
+
+                    fragment_hashes = []
+                    h = copy.deepcopy(mol.covalent_graph)
+                    h.remove_edge(*edge1)
+                    h.remove_edge(*edge2)
+
+                    connected_components = nx.algorithms.components.connected_components(h)
+
+                    for c in connected_components:
+                        subgraph = h.subgraph(c)
+                        fragment_hash = weisfeiler_lehman_graph_hash(subgraph, node_attr="specie")
+                        fragment_hashes.append(fragment_hash)
+
+                    equivalent_fragments_already_found = False
+                    for fragment_complex in mol.fragment_data:
+                        if len(fragment_hashes) == len(fragment_complex.fragment_hashes):
+                            if set(fragment_hashes) == set(fragment_complex.fragment_hashes):
+                                equivalent_fragments_already_found = True
+
+                    if not equivalent_fragments_already_found:
+
+                        if len(fragment_hashes) <= 2 and not self.allow_ring_opening:  # ==1 or <=2 # 2 bonds could lead to 1, 2, or 3 fragments
+                            pass
+                        else:
+                            
+                            fragment_complex = FragmentComplex(
+                                len(fragment_hashes), 2, [edge1[0:2], edge2[0:2]], fragment_hashes  # we've broken 2 bonds # edge[0:2]
+                            )
+                            mol.fragment_data.append(fragment_complex)
+
+        return False
+
+
 class has_covalent_ring(MSONable):
     def __init__(self):
         pass
@@ -525,6 +570,7 @@ bfo_species_decision_tree = [
     (add_star_hashes(), Terminal.KEEP),
     (add_unbroken_fragment(), Terminal.KEEP),
     (add_single_bond_fragments(allow_ring_opening=True), Terminal.KEEP),
+    # (add_two_bond_fragments(allow_ring_opening=True), Terminal.KEEP), # ? only take fragments that are still connected
     (has_covalent_ring(), [
         (covalent_ring_fragments(), Terminal.KEEP),
         (species_default_true(), Terminal.KEEP)

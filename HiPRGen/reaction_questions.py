@@ -1330,12 +1330,12 @@ bfo_reaction_decision_tree = [
     (metal_metal_reaction(), Terminal.DISCARD),
     # redox branch
     (is_redox_reaction(), Terminal.DISCARD),
-    (dG_above_threshold(5.0, "free_energy", 0.0), Terminal.DISCARD), # look
+    (dG_above_threshold(5.0, "free_energy", 0.0), Terminal.DISCARD), # look # introduce loops
     (single_reactant_with_ring_break_two(), Terminal.KEEP), #break2
     (single_product_with_ring_form_two(), Terminal.KEEP), #form2
-    (star_count_diff_above_threshold(8), Terminal.DISCARD), # 6 --> 8
-    (reaction_is_covalent_decomposable(), Terminal.DISCARD),
-    # (concerted_metal_coordination(), Terminal.DISCARD), # look
+    (star_count_diff_above_threshold(8), Terminal.DISCARD), # 6 --> 8 # total: 4 bonds can be broken and formed
+    (reaction_is_covalent_decomposable(), Terminal.DISCARD), # should remove A + B -> A + C
+    (concerted_metal_coordination(), Terminal.DISCARD), # look # when 1 fragment is single metal
     # (concerted_metal_coordination_one_product(), Terminal.DISCARD),
     # (concerted_metal_coordination_one_reactant(), Terminal.DISCARD),
     (metal_coordination_passthrough(), Terminal.KEEP),
@@ -1359,7 +1359,7 @@ bfo_logging_reaction_decision_tree = [
     (single_product_with_ring_form_two(), Terminal.DISCARD), #form2
     (star_count_diff_above_threshold(8), Terminal.KEEP), # 6 --> 8
     (reaction_is_covalent_decomposable(), Terminal.KEEP),
-    # (concerted_metal_coordination(), Terminal.DISCARD), # look
+    (concerted_metal_coordination(), Terminal.DISCARD), # look
     # (concerted_metal_coordination_one_product(), Terminal.DISCARD),
     # (concerted_metal_coordination_one_reactant(), Terminal.DISCARD),
     (metal_coordination_passthrough(), Terminal.DISCARD),
