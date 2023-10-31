@@ -690,6 +690,7 @@ class reaction_is_separable(MSONable):  # remove A + B -> C + D if there are 2 p
                 print("COMP ",product.molecule.composition)
             comp_diff = [(int(product_comps[0] == reactant_comps[0]), int(product_comps[1] == reactant_comps[1])),
                         (int(product_comps[1] == reactant_comps[0]), int(product_comps[0] == reactant_comps[1]))]
+            print(comp_diff)
             if (0,0) in comp_diff:
                 print("separable")
                 return True
