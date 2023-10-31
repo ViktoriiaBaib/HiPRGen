@@ -1405,25 +1405,28 @@ bfo_logging_reaction_decision_tree = [
     (metal_metal_reaction(), Terminal.DISCARD),
     # redox branch
     (is_redox_reaction(), Terminal.DISCARD),
-    (dG_above_threshold(5.0, "free_energy", 0.0), Terminal.DISCARD), # look
-    (single_reactant_with_ring_break_two(), Terminal.DISCARD), #break2
-    (single_product_with_ring_form_two(), Terminal.DISCARD), #form2
-    (star_count_diff_above_threshold(8), Terminal.KEEP), # 6 --> 8
-    (reaction_is_covalent_decomposable(), Terminal.KEEP),
-    (concerted_metal_coordination(), Terminal.DISCARD), # look
+    (dG_above_threshold(5.0, "free_energy", 0.0), Terminal.DISCARD), # look # introduce loops
+    (reaction_is_covalent_decomposable(), Terminal.DISCARD), # should remove A + B -> A + C
+    (reaction_is_separable(), Terminal.DISCARD), # should remove A + A -> B + C and any reaction separable by composition
+    #(single_reactant_with_ring_break_two(), Terminal.KEEP), #break2 # -> look if can remove
+    #(single_product_with_ring_form_two(), Terminal.KEEP), #form2 # -> look if can remove
+    (star_count_diff_above_threshold(8), Terminal.DISCARD), # 6 --> 8 # total: 4 distinct bonds can be broken and formed # symmetry can mess it up (similar bonds - more bonds)
+    # (concerted_metal_coordination(), Terminal.DISCARD), # look # when 1 fragment is single metal # does not change anything
     # (concerted_metal_coordination_one_product(), Terminal.DISCARD),
     # (concerted_metal_coordination_one_reactant(), Terminal.DISCARD),
     (metal_coordination_passthrough(), Terminal.DISCARD),
-    (
-        fragment_matching_found(),
-        [
-            (single_reactant_single_product_not_atom_transfer(), Terminal.KEEP),
-            (single_reactant_double_product_ring_close(), Terminal.KEEP),
-            (reaction_default_true(), Terminal.DISCARD),
-        ],
-    ),
+    (fragment_matching_found(), Terminal.DISCARD),
+    #(
+    #    fragment_matching_found(),
+    #    [
+    #        #(single_reactant_single_product_not_atom_transfer(), Terminal.DISCARD), # always false
+    #        #(single_reactant_double_product_ring_close(), Terminal.DISCARD), # always false
+    #        (reaction_default_true(), Terminal.KEEP),
+    #    ],
+    #),
     (reaction_default_true(), Terminal.KEEP),
 ]
+
 
 co2_reaction_decision_tree = [
     (
