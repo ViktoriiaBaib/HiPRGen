@@ -673,29 +673,29 @@ class reaction_is_separable(MSONable):  # remove A + B -> C + D if there are 2 p
     def __call__(self, reaction, mol_entries, params):
         if (reaction['number_of_reactants'] == 2 and
             reaction['number_of_products'] == 2):
-            print("*** REACTION: 2 REACT 2 PROD ***")
-            print("reactans")
+            #print("*** REACTION: 2 REACT 2 PROD ***")
+            #print("reactans")
             reactant_comps = []
             for i in range(reaction['number_of_reactants']):
                 reactant_id = reaction['reactants'][i]
                 reactant = mol_entries[reactant_id]
                 reactant_comps.append(reactant.molecule.composition)
-                print("COMP ",reactant.molecule.composition)
-            print("products")
+                #print("COMP ",reactant.molecule.composition)
+            #print("products")
             product_comps = []
             for i in range(reaction['number_of_products']):
                 product_id = reaction['products'][i]
                 product = mol_entries[product_id]
                 product_comps.append(product.molecule.composition)
-                print("COMP ",product.molecule.composition)
+                #print("COMP ",product.molecule.composition)
             comp_diff = [(int(product_comps[0] == reactant_comps[0]), int(product_comps[1] == reactant_comps[1])),
                         (int(product_comps[1] == reactant_comps[0]), int(product_comps[0] == reactant_comps[1]))]
-            print(comp_diff)
-            if (0,0) in comp_diff:
-                print("separable")
+            #print(comp_diff)
+            if (1,1) in comp_diff:
+                #print("separable")
                 return True
             else:
-                print("not separable")
+                #print("not separable")
                 return False
 
         return False
