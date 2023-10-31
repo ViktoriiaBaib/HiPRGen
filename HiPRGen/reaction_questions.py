@@ -688,10 +688,8 @@ class reaction_is_separable(MSONable):  # remove A + B -> C + D if there are 2 p
                 product = mol_entries[product_id]
                 product_comps.append(product.molecule.composition)
                 print("COMP ",product.molecule.composition)
-            comp_diff = [(product_comps[0] - reactant_comps[0], product_comps[1] - reactant_comps[1]),
-                        (product_comps[1] - reactant_comps[0], product_comps[0] - reactant_comps[1])]
-            print(type(comp_diff[0][0]), len(comp_diff[0][0]))
-            print("COMP DIFF ", comp_diff)
+            comp_diff = [(int(product_comps[0] == reactant_comps[0]), int(product_comps[1] == reactant_comps[1])),
+                        (int(product_comps[1] == reactant_comps[0]), int(product_comps[0] == reactant_comps[1]))]
             if (0,0) in comp_diff:
                 print("separable")
                 return True
