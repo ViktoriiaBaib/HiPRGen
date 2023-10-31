@@ -1382,8 +1382,8 @@ bfo_reaction_decision_tree = [
     (dG_above_threshold(5.0, "free_energy", 0.0), Terminal.DISCARD), # look # introduce loops
     (reaction_is_covalent_decomposable(), Terminal.DISCARD), # should remove A + B -> A + C
     (reaction_is_separable(), Terminal.DISCARD), # should remove A + A -> B + C and any reaction separable by composition
-    (single_reactant_with_ring_break_two(), Terminal.KEEP), #break2 # -> look if can remove
-    (single_product_with_ring_form_two(), Terminal.KEEP), #form2 # -> look if can remove
+    #(single_reactant_with_ring_break_two(), Terminal.KEEP), #break2 # -> look if can remove
+    #(single_product_with_ring_form_two(), Terminal.KEEP), #form2 # -> look if can remove
     (star_count_diff_above_threshold(8), Terminal.DISCARD), # 6 --> 8 # total: 4 distinct bonds can be broken and formed # symmetry can mess it up (similar bonds - more bonds)
     # (concerted_metal_coordination(), Terminal.DISCARD), # look # when 1 fragment is single metal # does not change anything
     # (concerted_metal_coordination_one_product(), Terminal.DISCARD),
