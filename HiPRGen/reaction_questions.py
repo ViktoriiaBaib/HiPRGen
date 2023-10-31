@@ -837,6 +837,7 @@ class fragment_matching_found(MSONable):
 
     def __call__(self, reaction, mol_entries, params):
 
+        print("\n\n\n====\nfragment_matching_found\n====\n")
         reactant_fragment_indices_list = []
         product_fragment_indices_list = []
 
@@ -844,14 +845,14 @@ class fragment_matching_found(MSONable):
             reactant = mol_entries[reaction["reactants"][0]] #reactant is a mol_entry
             for i in range(len(reactant.fragment_data)):  #fragment_data is a list of FragmentComplex objects, where each
                 reactant_fragment_indices_list.append([i]) #FragmentComplex object is basically a dictionary with four keys
-            print(f"** Num of reactants is 1, add all {len(reactant.fragment_data)} fragments, fragment data: ", reactant.fragment_data)
+            print(f"** Num of reactants is 1, add all {len(reactant.fragment_data)} fragments.")
 
         if reaction["number_of_reactants"] == 2: 
             reactant_0 = mol_entries[reaction["reactants"][0]]
             reactant_1 = mol_entries[reaction["reactants"][1]]
-            print("** Num of reactants is 2, we will iterate over both reactants.")
-            print("fragment data 1: ",reactant_0.fragment_data)
-            print("fragment data 2: ",reactant_1.fragment_data)
+            print(f"** Num of reactants is 2, their sizes are {len(reactant_0.fragment_data)} and {len(reactant_1.fragment_data)}.")
+            #print("fragment data 1: ",reactant_0.fragment_data)
+            #print("fragment data 2: ",reactant_1.fragment_data)
             for i in range(len(reactant_0.fragment_data)): #for each fragment of one reactant
                 for j in range(len(reactant_1.fragment_data)): #look at each fragment of the other reactant
                     if (                                                    #true only when adding fragments of one reactant with the other 
@@ -861,20 +862,20 @@ class fragment_matching_found(MSONable):
                     ): 
 
                         reactant_fragment_indices_list.append([i, j]) #append a list to the list containing fragment indicies for both reactants
-                        print("- added fragment combination: ", i, j)
+                        #print("- added fragment combination: ", i, j)
 
         if reaction["number_of_products"] == 1: #repeat for product indicies
             product = mol_entries[reaction["products"][0]]
-            print(f"** Num of products is 1, add all {len(product.fragment_data)} fragments, fragment data: ", product.fragment_data)
+            print(f"** Num of products is 1, add all {len(product.fragment_data)} fragments")
             for i in range(len(product.fragment_data)):
                 product_fragment_indices_list.append([i])
 
         if reaction["number_of_products"] == 2:
             product_0 = mol_entries[reaction["products"][0]]
             product_1 = mol_entries[reaction["products"][1]]
-            print("** Num of products is 2, we will iterate over both.")
-            print("fragment data 1: ",product_0.fragment_data)
-            print("fragment data 2: ",product_1.fragment_data)
+            print(f"** Num of products is 2, their sizes are {len(product_0.fragment_data)} and {len(product_1.fragment_data)}.")
+            #print("fragment data 1: ",product_0.fragment_data)
+            #print("fragment data 2: ",product_1.fragment_data)
             for i in range(len(product_0.fragment_data)):
                 for j in range(len(product_1.fragment_data)):
                     if (
@@ -884,11 +885,11 @@ class fragment_matching_found(MSONable):
                     ):
 
                         product_fragment_indices_list.append([i, j])
-                        print("- added fragment combination: ", i, j)
+                        #print("- added fragment combination: ", i, j)
 
         viable_fragment_matches = []
-        print("reactant_fragment_indices_list: ", reactant_fragment_indices_list)
-        print("product_fragment_indices_list: ", product_fragment_indices_list)
+        #print("reactant_fragment_indices_list: ", reactant_fragment_indices_list)
+        #print("product_fragment_indices_list: ", product_fragment_indices_list)
         for reactant_fragment_indices in reactant_fragment_indices_list: #iterating over all reactant and product fragment indicies
             for product_fragment_indices in product_fragment_indices_list:
                 reactant_fragment_count = 0
@@ -942,7 +943,7 @@ class fragment_matching_found(MSONable):
                     and reactant_fragment_count == 2
                     and product_fragment_count == 2
                 ):
-                    print("We continue...")
+                    #print("We continue...")
                     continue
 
                 if reactant_hashes == product_hashes:
@@ -952,7 +953,7 @@ class fragment_matching_found(MSONable):
                         reaction["hashes"] = reactant_hashes
                         reaction["reactant_fragment_count"] = reactant_fragment_count
                         reaction["product_fragment_count"] = product_fragment_count
-                        print("have hydrogen hash...")
+                        print(".......... have hydrogen hash")
                         return True
                     else:
                         tmp = {}
@@ -962,16 +963,16 @@ class fragment_matching_found(MSONable):
                         tmp["reactant_fragment_count"] = reactant_fragment_count
                         tmp["product_fragment_count"] = product_fragment_count
                         viable_fragment_matches.append(tmp)
-                        print("use tmp to fill up viable fragment matches...")
+                        print("... use tmp -> viable fragment matches")
 
         if len(viable_fragment_matches) > 0:
-            print("Have non zero viable fragment matches amount")
+            #print("Have non zero viable fragment matches amount")
             min_frag_size = 1000000000
             if len(viable_fragment_matches) == 1:
                 best_matching = viable_fragment_matches[0]
-                print(" - exactly 1")
+                #print(" - exactly 1")
             else:
-                print(" - >1")
+                #print(" - >1")
                 for viable_match in viable_fragment_matches:
                     if len(viable_match["reactant_bonds_broken"]) == 0:
                         for reactant_index in reaction["reactants"]:
