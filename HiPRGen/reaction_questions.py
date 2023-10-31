@@ -685,7 +685,7 @@ class reaction_is_separable(MSONable):  # remove A + B -> C + D if there are 2 p
                 product_comps.append(product.molecule.composition)
             comp_diff = [(int(product_comps[0] == reactant_comps[0]), int(product_comps[1] == reactant_comps[1])),
                         (int(product_comps[1] == reactant_comps[0]), int(product_comps[0] == reactant_comps[1]))]
-            if (1,1) in comp_diff:
+            if (1,1) in comp_diff: # there are 2 pairs of same compositions
                 return True
             else:
                 return False
@@ -1368,14 +1368,14 @@ bfo_reaction_decision_tree = [
     # (concerted_metal_coordination_one_product(), Terminal.DISCARD),
     # (concerted_metal_coordination_one_reactant(), Terminal.DISCARD),
     (metal_coordination_passthrough(), Terminal.KEEP),
-    #(
-        #fragment_matching_found(),
-        #[
-        #    (single_reactant_single_product_not_atom_transfer(), Terminal.DISCARD),
-        #    (single_reactant_double_product_ring_close(), Terminal.DISCARD),
-        #    (reaction_default_true(), Terminal.KEEP),
-        #],
-    #),
+    (
+        fragment_matching_found(),
+        [
+            (single_reactant_single_product_not_atom_transfer(), Terminal.DISCARD),
+            (single_reactant_double_product_ring_close(), Terminal.DISCARD),
+            (reaction_default_true(), Terminal.KEEP),
+        ],
+    ),
     (reaction_default_true(), Terminal.KEEP),
 ]
 
