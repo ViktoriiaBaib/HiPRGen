@@ -883,7 +883,7 @@ def bfo_test():
     subprocess.run(["mkdir", folder])
 
     # Generated json from quacc calc
-    mol_json = "./data/bfo_hiprgen_small_dataset_test.json"
+    mol_json = "./data/bfo_hiprgen_small_dataset.json"
     database_entries = loadfn(mol_json)
     # step 1: pass the input molecules through the species decision tree to discard molecules
     species_decision_tree = bfo_species_decision_tree
