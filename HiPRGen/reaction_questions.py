@@ -643,27 +643,59 @@ class reaction_is_covalent_decomposable(MSONable): # Remove A + B -> A + C, even
     def __call__(self, reaction, mol_entries, params):
         if (reaction['number_of_reactants'] == 2 and
             reaction['number_of_products'] == 2):
-            print("*** REACTION 2 REACT 2 PROD ***")
-            print("reactans")
             reactant_total_hashes = set()
             for i in range(reaction['number_of_reactants']):
                 reactant_id = reaction['reactants'][i]
                 reactant = mol_entries[reactant_id]
                 reactant_total_hashes.add(reactant.covalent_hash)
-                print("HASH\n",reactant.covalent_hash)
-            print("products")
             product_total_hashes = set()
             for i in range(reaction['number_of_products']):
                 product_id = reaction['products'][i]
                 product = mol_entries[product_id]
                 product_total_hashes.add(product.covalent_hash)
-                print("HASH\n",product.covalent_hash)
 
             if len(reactant_total_hashes.intersection(product_total_hashes)) > 0:
-                print("have intersection")
                 return True
             else:
-                print("no intersection")
+                return False
+
+        return False
+
+
+class reaction_is_separable(MSONable):  # remove A + B -> C + D if there are 2 pairs of same compositions
+                                        # then we represent the reaction as A -> C and B -> D
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        return "reaction is separable into two"
+
+    def __call__(self, reaction, mol_entries, params):
+        if (reaction['number_of_reactants'] == 2 and
+            reaction['number_of_products'] == 2):
+            print("*** REACTION: 2 REACT 2 PROD ***")
+            print("reactans")
+            reactant_comps = []
+            for i in range(reaction['number_of_reactants']):
+                reactant_id = reaction['reactants'][i]
+                reactant = mol_entries[reactant_id]
+                reactant_comps.append(reactant.molecule.composition)
+                print("COMP ",reactant.molecule.composition)
+            print("products")
+            product_comps = []
+            for i in range(reaction['number_of_products']):
+                product_id = reaction['products'][i]
+                product = mol_entries[product_id]
+                product_comps.add(product.molecule.composition)
+                print("COMP ",product.molecule.composition)
+            comp_diff = [(product_comps[0] - reactant_comps[0], product_comps[1] - reactant_comps[1]),
+                        (product_comps[1] - reactant_comps[0], product_comps[0] - reactant_comps[1])]
+            print("COMP DIFF ", comp_diff)
+            if (0,0) in comp_diff:
+                print("separable")
+                return True
+            else:
+                print("not separable")
                 return False
 
         return False
@@ -1336,6 +1368,7 @@ bfo_reaction_decision_tree = [
     (is_redox_reaction(), Terminal.DISCARD),
     (dG_above_threshold(5.0, "free_energy", 0.0), Terminal.DISCARD), # look # introduce loops
     (reaction_is_covalent_decomposable(), Terminal.DISCARD), # should remove A + B -> A + C
+    (reaction_is_separable(), Terminal.DISCARD), # should remove A + A -> B + C and any reaction separable by composition
     (single_reactant_with_ring_break_two(), Terminal.KEEP), #break2
     (single_product_with_ring_form_two(), Terminal.KEEP), #form2
     (star_count_diff_above_threshold(8), Terminal.DISCARD), # 6 --> 8 # total: 4 bonds can be broken and formed

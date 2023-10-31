@@ -211,7 +211,7 @@ class add_two_bond_fragments(MSONable):
                     for c in connected_components:
                         subgraph = h.subgraph(c)
                         fragment_hash = weisfeiler_lehman_graph_hash(subgraph, node_attr="specie")
-                        fragment_hashes.append(fragment_hash)
+                        fragment_hashes.append(fragment_hash)       # can have 1, 2, or 3 fragments, allow all
 
                     equivalent_fragments_already_found = False
                     for fragment_complex in mol.fragment_data:
@@ -221,12 +221,12 @@ class add_two_bond_fragments(MSONable):
 
                     if not equivalent_fragments_already_found:
 
-                        if len(fragment_hashes) <= 2 and not self.allow_ring_opening:  # ==1 or <=2 # 2 bonds could lead to 1, 2, or 3 fragments
+                        if len(fragment_hashes) == 1 and not self.allow_ring_opening:  # 2 bonds could lead to 1, 2, or 3 fragments
                             pass
                         else:
                             
                             fragment_complex = FragmentComplex(
-                                len(fragment_hashes), 2, [edge1[0:2], edge2[0:2]], fragment_hashes  # we've broken 2 bonds # edge[0:2]
+                                len(fragment_hashes), 2, [edge1[0:2], edge2[0:2]], fragment_hashes  # we've broken 2 bonds # edge[0:2], should have 2 frag hashes
                             )
                             mol.fragment_data.append(fragment_complex)
 
@@ -566,11 +566,11 @@ euvl_species_decision_tree = [
 ]
 
 bfo_species_decision_tree = [
-    (compute_graph_hashes, Terminal.KEEP),
+    (compute_graph_hashes, Terminal.KEEP), # added covalent hashes
     (add_star_hashes(), Terminal.KEEP),
     (add_unbroken_fragment(), Terminal.KEEP),
     (add_single_bond_fragments(allow_ring_opening=True), Terminal.KEEP),
-    (add_two_bond_fragments(allow_ring_opening=True), Terminal.KEEP), # ? only take fragments that are still connected
+    (add_two_bond_fragments(allow_ring_opening=True), Terminal.KEEP), # Q: only take fragments that are still connected
     (has_covalent_ring(), [
         (covalent_ring_fragments(), Terminal.KEEP),
         (species_default_true(), Terminal.KEEP)
