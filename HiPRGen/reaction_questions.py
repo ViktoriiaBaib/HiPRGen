@@ -837,15 +837,16 @@ class fragment_matching_found(MSONable):
 
     def __call__(self, reaction, mol_entries, params):
 
-        print("\n\n\n====\nfragment_matching_found\n====\n")
+        #print("\n\n\n====\nfragment_matching_found\n====\n")
         reactant_fragment_indices_list = []
         product_fragment_indices_list = []
 
         if reaction["number_of_reactants"] == 1: #creates a list of the indicies pointing to FragmentComplex objects
             reactant = mol_entries[reaction["reactants"][0]] #reactant is a mol_entry
             for i in range(len(reactant.fragment_data)):  #fragment_data is a list of FragmentComplex objects, where each
+                #if reactant.fragment_data[i].number_of_bonds_broken
                 reactant_fragment_indices_list.append([i]) #FragmentComplex object is basically a dictionary with four keys
-            print(f"** Num of reactants is 1, add all {len(reactant.fragment_data)} fragments.")
+            #print(f"** Num of reactants is 1, add all {len(reactant.fragment_data)} fragments.")
 
         if reaction["number_of_reactants"] == 2: 
             reactant_0 = mol_entries[reaction["reactants"][0]]
@@ -858,7 +859,7 @@ class fragment_matching_found(MSONable):
                     if (                                                    #true only when adding fragments of one reactant with the other 
                         reactant_0.fragment_data[i].number_of_bonds_broken  #unfragmented reactant?
                         + reactant_1.fragment_data[j].number_of_bonds_broken
-                        <= 1                                                    # why <= 1?
+                        <= 2                                                    # include b1, b2
                     ): 
 
                         reactant_fragment_indices_list.append([i, j]) #append a list to the list containing fragment indicies for both reactants
@@ -866,7 +867,7 @@ class fragment_matching_found(MSONable):
 
         if reaction["number_of_products"] == 1: #repeat for product indicies
             product = mol_entries[reaction["products"][0]]
-            print(f"** Num of products is 1, add all {len(product.fragment_data)} fragments")
+            #print(f"** Num of products is 1, add all {len(product.fragment_data)} fragments")
             for i in range(len(product.fragment_data)):
                 product_fragment_indices_list.append([i])
 
@@ -881,7 +882,7 @@ class fragment_matching_found(MSONable):
                     if (
                         product_0.fragment_data[i].number_of_bonds_broken
                         + product_1.fragment_data[j].number_of_bonds_broken
-                        <= 1
+                        <= 2
                     ):
 
                         product_fragment_indices_list.append([i, j])
@@ -953,7 +954,7 @@ class fragment_matching_found(MSONable):
                         reaction["hashes"] = reactant_hashes
                         reaction["reactant_fragment_count"] = reactant_fragment_count
                         reaction["product_fragment_count"] = product_fragment_count
-                        print(".......... have hydrogen hash")
+                        #print(".......... have hydrogen hash")
                         return True
                     else:
                         tmp = {}
@@ -963,7 +964,7 @@ class fragment_matching_found(MSONable):
                         tmp["reactant_fragment_count"] = reactant_fragment_count
                         tmp["product_fragment_count"] = product_fragment_count
                         viable_fragment_matches.append(tmp)
-                        print("... use tmp -> viable fragment matches")
+                        #print("... use tmp -> viable fragment matches")
 
         if len(viable_fragment_matches) > 0:
             #print("Have non zero viable fragment matches amount")
@@ -1000,9 +1001,9 @@ class fragment_matching_found(MSONable):
             reaction["hashes"] = best_matching["hashes"]
             reaction["reactant_fragment_count"] = best_matching["reactant_fragment_count"]
             reaction["product_fragment_count"] = best_matching["product_fragment_count"]
-            print(">>>> returning true")
+            #print(">>>> returning true")
             return True
-        print(">>>> returning false")
+        #print(">>>> returning false")
         return False
 
 
