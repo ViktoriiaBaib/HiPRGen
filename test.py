@@ -937,7 +937,7 @@ def bfo_test():
             folder + "/worker_payload.json",
         ]
     )
-
+    """
     # Load crn and generate mol pictures and species report
     network_loader = NetworkLoader(
         folder + "/rn.sqlite",
@@ -949,6 +949,70 @@ def bfo_test():
         network_loader.mol_entries, folder + "/dummy.tex", rebuild_mol_pictures=True
     )
     species_report(network_loader, folder + "/species_report.tex")
+    """
+    #### RNMC
+
+    # find the indices of species to be used in the initial condition for propagating trajectories
+    bino3_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bino3.xyz", 0) # init
+    moe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/moe.xyz", 0) # init
+    bino31moe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bino31moe.xyz", 0) # target
+
+    # After generating a reaction network, it is stored in rn.sqlite.
+    # define an initial condition for Monte Carlo simulation | how much 
+    initial_state = {bino3_id: 1, moe_id: 100}
+
+    # The initial state and the trajectories (after simulation) are stored in
+    # a seperate database from the network, here called initial_state.sqlite.
+    insert_initial_state(initial_state, mol_entries, folder + "/initial_state.sqlite")
+
+    # GMC is a high performance reaction network Monte Carlo simulator using the Gillespie algorithm: https://github.com/BlauGroup/RNMC
+    # we run 100 trajectories (small set of species) each of 10000 steps (dG>0, we allow loops)
+    subprocess.run(
+        [
+            "GMC",
+            "--reaction_database=" + folder + "/rn.sqlite",
+            "--initial_state_database=" + folder + "/initial_state.sqlite",
+            "--number_of_simulations=100",
+            "--base_seed=1000",
+            "--thread_count=" + number_of_threads,
+            "--step_cutoff=10000",
+        ]
+    )
+
+    network_loader = NetworkLoader(
+        folder + "/rn.sqlite",
+        folder + "/mol_entries.pickle",
+        folder + "/initial_state.sqlite",
+    )
+
+    network_loader.load_initial_state_and_trajectories()
+
+    # generate mol pictures and make pdf
+    report_generator = ReportGenerator(
+        network_loader.mol_entries, folder + "/dummy.tex", rebuild_mol_pictures=True
+    )
+
+    # The tally report shows reactions sorted by the number of times fired.
+    reaction_tally_report(network_loader, folder + "/reaction_tally.tex")
+
+    # The species report shows every specie in the network and their IDs.
+    species_report(network_loader, folder + "/species_report.tex")
+
+    # Pathfinding is a central goal of HiPRGen / GMC. 
+    pathfinding = Pathfinding(network_loader)
+
+    # The pathway report shows all the ways that a target species was produced.
+    # We sort by pathway cost 
+    pathway_report(
+        pathfinding, bino31moe_id, folder + "/bino31moe_pathways.tex", sort_by_frequency=False
+    )
+
+    simulation_replayer = SimulationReplayer(network_loader)
+    # The consumption report shows reactions which consumed a target
+    # species, sorted by the number of times the reaction fired.
+    consumption_report(
+        simulation_replayer, bino31moe_id, folder + "/bino31moe_consumption_report.tex"
+    )
 
     tests_passed = True
 
