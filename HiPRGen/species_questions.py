@@ -7,6 +7,7 @@ from HiPRGen.constants import li_ec, Terminal, mg_g2, mg_thf, m_formulas, metals
 import numpy as np
 from monty.json import MSONable
 from itertools import combinations
+from collections import Counter
 
 """
 species decision tree:
@@ -216,7 +217,8 @@ class add_two_bond_fragments(MSONable):
                     equivalent_fragments_already_found = False
                     for fragment_complex in mol.fragment_data:
                         if len(fragment_hashes) == len(fragment_complex.fragment_hashes):
-                            if set(fragment_hashes) == set(fragment_complex.fragment_hashes): # A A B same set as A B B - fix, dict: key = hash, value = number it shows up, compare them, want 
+                            #if set(fragment_hashes) == set(fragment_complex.fragment_hashes): # A A B same set as A B B - fix
+                            if dict(Counter(fragment_hashes)) == dict(Counter(fragment_complex.fragment_hashes)):  # fix dict: key = hash, value = number , compare them 
                                 equivalent_fragments_already_found = True
 
                     if not equivalent_fragments_already_found:
