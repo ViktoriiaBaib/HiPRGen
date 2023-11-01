@@ -14,8 +14,8 @@ def find_mol_entry_from_xyz_and_charge(mol_entries, xyz_file_path, charge):
     )
 
     # correction to the molecule graph
-    target_mol_graph = metal_edge_extender(target_mol_graph)
-    # target_mol_graph = oxygen_edge_extender(target_mol_graph)
+    target_mol_graph = metal_edge_extender(target_mol_graph, cutoff=3, metals=None,coordinators=("O"))
+    #target_mol_graph = metal_edge_extender(target_mol_graph)
 
     match = False
     index = -1
