@@ -955,8 +955,8 @@ def bfo_test():
     # find the indices of species to be used in the initial condition for propagating trajectories
     bino3_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bino3.xyz", 0) # init
     moe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/moe.xyz", 0) # init
-    #bino31moe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bino31moe.xyz", 0) # step 1 target
-    bimoe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bimoe.xyz", 0) # target
+    bimoe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bino31moe.xyz", 0) # step 1 target
+    #bimoe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bimoe.xyz", 0) # target
 
     # After generating a reaction network, it is stored in rn.sqlite.
     # define an initial condition for Monte Carlo simulation | how much 
