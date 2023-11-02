@@ -339,7 +339,7 @@ class MoleculeEntry:
 
         entry_id = doc["name"]
         mol_gr = MoleculeGraph.with_local_env_strategy(molecule, OpenBabelNN())
-        mol_graph = metal_edge_extender(mol_gr, cutoff=3, metals=None,coordinators=("O"))
+        mol_graph = metal_edge_extender(mol_gr, cutoff=3.6, metals=None,coordinators=("O"))
 
         partial_charges_resp = None
         partial_charges_mulliken = None
