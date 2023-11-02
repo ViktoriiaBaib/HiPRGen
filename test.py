@@ -883,7 +883,7 @@ def bfo_test():
     subprocess.run(["mkdir", folder])
 
     # Generated json from quacc calc
-    mol_json = "./data/bfo_hiprgen_small_dataset.json"
+    mol_json = "./data/bfo_hiprgen_dataset.json"
     database_entries = loadfn(mol_json)
     # step 1: pass the input molecules through the species decision tree to discard molecules
     species_decision_tree = bfo_species_decision_tree
@@ -955,8 +955,8 @@ def bfo_test():
     # find the indices of species to be used in the initial condition for propagating trajectories
     bino3_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bino3.xyz", 0) # init
     moe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/moe.xyz", 0) # init
-    bimoe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bino31moe.xyz", 0) # step 1 target
-    #bimoe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bimoe.xyz", 0) # target
+    #bimoe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bino31moe.xyz", 0) # step 1 target
+    bimoe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bimoe.xyz", 0) # target
 
     # After generating a reaction network, it is stored in rn.sqlite.
     # define an initial condition for Monte Carlo simulation | how much 
