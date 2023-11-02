@@ -883,7 +883,7 @@ def bfo_test():
     subprocess.run(["mkdir", folder])
 
     # Generated json from quacc calc
-    mol_json = "./data/bfo_hiprgen_small_dataset.json"
+    mol_json = "./data/bfo_hiprgen_dataset.json"
     database_entries = loadfn(mol_json)
     # step 1: pass the input molecules through the species decision tree to discard molecules
     species_decision_tree = bfo_species_decision_tree
@@ -955,7 +955,8 @@ def bfo_test():
     # find the indices of species to be used in the initial condition for propagating trajectories
     bino3_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bino3.xyz", 0) # init
     moe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/moe.xyz", 0) # init
-    bino31moe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bino31moe.xyz", 0) # target
+    #bino31moe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bino31moe.xyz", 0) # step 1 target
+    bimoe_id = find_mol_entry_from_xyz_and_charge(mol_entries, "./xyz_files/bimoe.xyz", 0) # target
 
     # After generating a reaction network, it is stored in rn.sqlite.
     # define an initial condition for Monte Carlo simulation | how much 
@@ -1004,14 +1005,14 @@ def bfo_test():
     # The pathway report shows all the ways that a target species was produced.
     # We sort by pathway cost 
     pathway_report(
-        pathfinding, bino31moe_id, folder + "/bino31moe_pathways.tex", sort_by_frequency=False
+        pathfinding, bimoe_id, folder + "/bimoe_pathways.tex", sort_by_frequency=False
     )
 
     simulation_replayer = SimulationReplayer(network_loader)
     # The consumption report shows reactions which consumed a target
     # species, sorted by the number of times the reaction fired.
     consumption_report(
-        simulation_replayer, bino31moe_id, folder + "/bino31moe_consumption_report.tex"
+        simulation_replayer, bimoe_id, folder + "/bimoe_consumption_report.tex"
     )
 
     tests_passed = True
