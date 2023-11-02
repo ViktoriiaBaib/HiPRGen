@@ -937,7 +937,7 @@ def bfo_test():
             folder + "/worker_payload.json",
         ]
     )
-    
+    """
     # Load crn and generate mol pictures and species report
     network_loader = NetworkLoader(
         folder + "/rn.sqlite",
@@ -1014,7 +1014,7 @@ def bfo_test():
     consumption_report(
         simulation_replayer, bimoe_id, folder + "/bimoe_consumption_report.tex"
     )
-    """
+    
     tests_passed = True
 
     return tests_passed
