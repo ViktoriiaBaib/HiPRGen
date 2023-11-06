@@ -85,10 +85,10 @@ class bcolors:
 # set and a magnesium set. Since the lithium test set is older, we shall
 # document that instead of the mg test set.
 
-if os.path.isdir("./scratch"):
-    subprocess.run(["rm", "-r", "./scratch"])
+#if os.path.isdir("./scratch"):
+#    subprocess.run(["rm", "-r", "./scratch"])
 
-subprocess.run(["mkdir", "./scratch"])
+#subprocess.run(["mkdir", "./scratch"])
 
 
 def li_test():
@@ -880,7 +880,7 @@ def bfo_test():
 
     # folder is the where we store all our intermediate databases
     folder = "./scratch/bfo_test"
-    subprocess.run(["mkdir", folder])
+    #subprocess.run(["mkdir", folder])
 
     # Generated json from quacc calc
     mol_json = "./data/bfo_hiprgen_dataset_test.json"
@@ -893,6 +893,7 @@ def bfo_test():
     # We consider two molecules to be equivalent if they have the same total charge,
     # composition, and covalent bonds, even if they have different metal coordination
     # ASK: mol.solvation_correction | AttributeError: 'MoleculeEntry' object has no attribute 'solvation_correction'
+    """
     mol_entries = species_filter(
         database_entries,
         mol_entries_pickle_location=folder + "/mol_entries.pickle",
@@ -900,9 +901,12 @@ def bfo_test():
         species_decision_tree=species_decision_tree,
         coordimer_weight=lambda mol: (mol.penalty, mol.get_free_energy(params["temperature"])),
     )
-
+    """
+    # continuing from where we stopped
+    with open(folder + "/mol_entries.pickle", "rb") as f:
+        mol_entries = pickle.load(f)
     print(len(mol_entries))
-
+    """
     bucket(mol_entries, folder + "/buckets.sqlite")
     # 3rd parameter --> log file
     dispatcher_payload = DispatcherPayload(
@@ -917,7 +921,7 @@ def bfo_test():
         params,
         bfo_reaction_decision_tree,
     )
-
+   
     # The dispatcher and worker payloads are passed through the MPI barrier
     # as JSON blobs dispatcher_payload and worker_payload
     dumpfn(dispatcher_payload, folder + "/dispatcher_payload.json")
@@ -937,6 +941,7 @@ def bfo_test():
             folder + "/worker_payload.json",
         ]
     )
+    """
     """
     # Load crn and generate mol pictures and species report
     network_loader = NetworkLoader(
@@ -964,7 +969,7 @@ def bfo_test():
 
     # The initial state and the trajectories (after simulation) are stored in
     # a seperate database from the network, here called initial_state.sqlite.
-    insert_initial_state(initial_state, mol_entries, folder + "/initial_state.sqlite")
+    #insert_initial_state(initial_state, mol_entries, folder + "/initial_state.sqlite")
 
     # GMC is a high performance reaction network Monte Carlo simulator using the Gillespie algorithm: https://github.com/BlauGroup/RNMC
     # we run 100 trajectories (small set of species) each of 10000 steps (dG>0, we allow loops)

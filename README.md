@@ -4,7 +4,7 @@ CRN branch
 
 HiPRGen (**Hi**_gh_ **P**_erformance_ **R**_eaction_ **Gen**_eration_) is a python module for constructing reaction networks via exhaustive reaction enumeration and filtering decision trees with the capacity to be applied to systems with hundreds of billions of possible reactions. HiPRGen is built on top of [MPI4py](https://mpi4py.readthedocs.io/en/stable/) which facilitates multi-node parallelism.
 
-### Installation
+### Running locally
 
 HiPRGen depends on `pymatgen`, `openbabel`, `pygraphviz`, `pycairo` and `mpi4py`. In our experience, the Conda version of MPI4py does not work consistently, so we use the [nix package manager](https://nixos.org/) to get HiPRGen running on a wide range of systems.  Instructions for installing nix can be found [here](https://nixos.org/download.html).
 
@@ -42,27 +42,59 @@ On the LRC cluster, an environment where HiPRGen can be run is set up as follows
 
 ```
 cd $HOME
+
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate
+
 module load python/3.8.2-gcc
-pip3 install --user mpi4py pymatgen
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
+module load gcc/7.4.0
+module load openmpi/4.0.1-gcc
+pip3 install --user mpi4py
 
-# load miniconda
-source ./.bashrc
+conda create -n hiprgen python=3.8 -y
+conda activate hiprgen
+conda install -c conda-forge openbabel -y
+conda install -c conda-forge pygraphviz -y
+#conda install -c conda-forge pymatgen -y
+conda install -c conda-forge pycairo -y
 
-conda create -n HiPRGen_RNMC python=3.8
-conda activate HiPRGen_RNMC
-conda install -c conda-forge openbabel pygraphviz pymatgen pycairo
+cd
 
+git clone https://github.com/ViktoriiaBaib/HiPRGen.git
+cd HiPRGen
+git checkout vik_crn
+cd
 
-git clone https://github.com/BlauGroup/HiPRGen.git
 git clone https://github.com/BlauGroup/RNMC.git
 cd RNMC
 module load gsl
-CC=g++ ./build.sh
-export PATH=$PATH:$PROJ/RNMC/build
-cd ../HiPRGen
+CXX=g++ ./build.sh
+export PATH=$PATH:$HOME/RNMC/build
+
+cd
+
+#additional packages
+
+conda install -c conda-forge matplotlib -y
+conda install -c conda-forge numpy -y
+pip install ruamel.yaml==0.17.21
+pip install pymatgen==2023.3.10
+pip install ase==3.22.1
 python test.py 2
+```
+
+#### Running
+
+After activating environment, reload modules to avoid errors:
+```
+module load python/3.8.2-gcc
+module load gcc/7.4.0
+module load openmpi/4.0.1-gcc
+
+cd RNMC
+module load gsl
+CXX=g++ ./build.sh # otherwise get FileNotFoundError: [Errno 2] No such file or directory: 'GMC'
+export PATH=$PATH:$HOME/RNMC/build
 ```
 
 ### Tests
