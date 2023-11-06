@@ -24,7 +24,7 @@ def init_ase_atoms_from_dict(doc):
 def get_free_energy(doc):
     return doc["energy"]+doc["enthalpy"]-298.15*doc["entropy"]
 
-mol_json = "bfo_hiprgen_small_dataset.json"
+mol_json = "bfo_hiprgen_dataset.json"
 
 database_entries = loadfn(mol_json)
 
