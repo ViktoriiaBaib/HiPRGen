@@ -31,7 +31,8 @@ database_entries = loadfn(mol_json)
 for doc in database_entries:
     #if "graph463" not in doc["name"]:
     #    continue
-    atoms = init_ase_atoms_from_dict(doc)
-    free_energy = get_free_energy(doc)
-    write("tmp_xyz/"+doc["name"]+".xyz", atoms)
-    print(free_energy, "\t" ,doc["name"])
+    #atoms = init_ase_atoms_from_dict(doc)
+    #free_energy = get_free_energy(doc)
+    #write("tmp_xyz/"+doc["name"]+".xyz", atoms)
+    #print(free_energy, "\t" ,doc["name"])
+    print(doc["name"])
