@@ -969,7 +969,7 @@ def bfo_test():
 
     # The initial state and the trajectories (after simulation) are stored in
     # a seperate database from the network, here called initial_state.sqlite.
-    #insert_initial_state(initial_state, mol_entries, folder + "/initial_state.sqlite")
+    insert_initial_state(initial_state, mol_entries, folder + "/initial_state.sqlite")
 
     # GMC is a high performance reaction network Monte Carlo simulator using the Gillespie algorithm: https://github.com/BlauGroup/RNMC
     # we run 100 trajectories (small set of species) each of 10000 steps (dG>0, we allow loops)
