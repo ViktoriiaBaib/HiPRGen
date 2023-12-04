@@ -949,11 +949,12 @@ def bfo_test():
     folder + "/mol_entries.pickle",
     )
 
+    # Skip this if continue with RNMC, do it after
     # generate mol pictures and make pdf
-    report_generator = ReportGenerator(
-        network_loader.mol_entries, folder + "/dummy.tex", rebuild_mol_pictures=True
-    )
-    species_report(network_loader, folder + "/species_report.tex")
+    #report_generator = ReportGenerator(
+    #    network_loader.mol_entries, folder + "/dummy.tex", rebuild_mol_pictures=True
+    #)
+    #species_report(network_loader, folder + "/species_report.tex")
     
     #### RNMC
 
